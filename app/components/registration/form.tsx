@@ -1,9 +1,10 @@
 "use client";
-
+import { useRouter } from "next/router";
 import { use, useState } from "react";
 import { supabase } from "@/app/lib/supabase";
 import { RegisterSchema } from "@/app/lib/validations/register";
 import { RegisterType } from "@/app/lib/validations/register";
+import Link from "next/link";
 export function RegisterForm(){
      const [role, setRole] = useState<"school" | "private tutor">("school");
 const [name,setName]=useState<string>("");
@@ -15,7 +16,7 @@ const [passwordMatch,setPasswordMatch]=useState<boolean>(true)
 const [errors, setErrors] = useState<
   Partial<Record<keyof RegisterType, string[]>>
 >({});
-
+const router=useRouter();
 async function handleRegister(){
   setErrors({})
  const result = RegisterSchema.safeParse({
@@ -55,6 +56,7 @@ setPasswordMatch(false);
   }
 
   alert("Account created!");
+  router.push('/login');
 }catch (err) {
     console.error(err);
   } finally {
@@ -175,9 +177,11 @@ setPasswordMatch(false);
 
         <p className="mt-5 text-center text-xs text-slate-500">
           Already have an account?{" "}
-          <span className="text-[#4F46E5] font-medium cursor-pointer">
+          <Link
+          href="/login"
+          className="text-[#4F46E5] font-medium cursor-pointer">
             Login
-          </span>
+          </Link>
         </p>
 
       </div>
