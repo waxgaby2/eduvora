@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { createClient } from "@/app/lib/client";
 import { RegisterSchema } from "@/app/lib/validations/register";
