@@ -1,8 +1,19 @@
 import { RegisterForm } from "../components/registration/form";
+import { redirect } from "next/navigation";
+import { createClient } from "../lib/supabase/server";
 
 
-export default function RegisterPage() {
- 
+export default async function RegisterPage() {
+   const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="flex flex-col py-20 min-h-screen text-slate-900 items-center bg-indigo-100 px-4">
 
