@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/router";
 import { use, useState } from "react";
-import { supabase } from "@/app/lib/supabase";
+import { createClient } from "@/app/lib/client";
 import { RegisterSchema } from "@/app/lib/validations/register";
 import { RegisterType } from "@/app/lib/validations/register";
 import Link from "next/link";
@@ -16,6 +16,7 @@ const [passwordMatch,setPasswordMatch]=useState<boolean>(true)
 const [errors, setErrors] = useState<
   Partial<Record<keyof RegisterType, string[]>>
 >({});
+const supabase = createClient();
 const router=useRouter();
 async function handleRegister(){
   setErrors({})
