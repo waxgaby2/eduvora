@@ -19,12 +19,18 @@ export default async function DashboardLayout({
     redirect("/login");
      console.log(user)
   }
- 
+
+ const { data: school } = await supabase
+  .from("schools")
+  .select("*")
+  .eq("id", user?.id)
+  .single();
+
   return (
     <div className="flex min-h-screen text-black bg-slate-50">
-    <Sidebar />
+    <Sidebar schoolName={school?.school_name} schoolCode={school?.school_code} />
       <div className="flex-1">
-        <Header />
+        <Header schoolName={school?.school_name} schoolCode={school?.school_code} />
         <main className="p-6">
           {children}
         </main>

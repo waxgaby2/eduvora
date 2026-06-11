@@ -6,7 +6,8 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { QuickAccess } from "../components/dashboard/school/quickaccess";
-
+import { createClient } from "../lib/supabase/server";
+import { getSchool } from "../lib/db/schooldata";
 const stats = [
   {
     title: "Students",
@@ -34,10 +35,12 @@ const stats = [
   },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+
+const school = await getSchool();
   return (
     <div className="space-y-8">
-      {/* Welcome */}
+
       <section>
         <h2 className="text-3xl font-bold text-slate-900">
           Welcome Back 👋
@@ -48,11 +51,15 @@ export default function DashboardPage() {
         </p>
       </section>
 
-      {/* Stats */}
       <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
-
+if(stat.title==="Students"){
+  stat.value=school?.student_counter;
+}
+if(stat.title==="Teachers"){
+  stat.value=school?.teacher_counter;
+}
           return (
             <div
               key={stat.title}
@@ -86,9 +93,8 @@ export default function DashboardPage() {
         })}
       </section>
 
-      {/* Bottom Grid */}
       <section className="grid gap-6 lg:grid-cols-3">
-        {/* Recent Activity */}
+  
         <div className="rounded-3xl border border-slate-200 bg-white p-6 lg:col-span-2">
           <h3 className="text-lg font-semibold text-slate-900">
             Recent Activity
@@ -118,7 +124,6 @@ export default function DashboardPage() {
  
       </section>
 
-      {/* Upcoming Classes */}
       <section className="rounded-3xl border border-slate-200 bg-white p-6">
         <h3 className="text-lg font-semibold text-slate-900">
           Upcoming Classes

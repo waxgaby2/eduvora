@@ -5,6 +5,7 @@ import { createClient } from "@/app/lib/client";
 import { RegisterSchema } from "@/app/lib/validations/register";
 import { RegisterType } from "@/app/lib/validations/register";
 import Link from "next/link";
+import { generateSchoolCode } from "@/app/lib/schoolcode";
 export function RegisterForm(){
      const [role, setRole] = useState<"school" | "private tutor">("school");
 const [name,setName]=useState<string>("");
@@ -18,53 +19,101 @@ const [errors, setErrors] = useState<
 >({});
 const supabase = createClient();
 const router=useRouter();
-async function handleRegister(){
-  setErrors({})
- const result = RegisterSchema.safeParse({
-  name,
-  email,
-  password,
-});
 
-if (!result.success) {
-  setErrors(result.error.flatten().fieldErrors);
-  return;
-}
+async function handleRegister() {
+  setErrors({});
 
-if(password!==confirmPassword){
-setPasswordMatch(false);
-  return;
-}else{
-  setPasswordMatch(true);
-}
- try {
-    setLoading(true);
+  const result = RegisterSchema.safeParse({
+    name,
+    email,
+    password,
+  });
 
- const { data, error } = await supabase.auth.signUp({
-  email,
-  password,
-  options: {
-    data: {
-      full_name: name,
-      role,
-    },
-  },
-});
-
-  if (error) {
-    alert(error.message);
+  if (!result.success) {
+    setErrors(result.error.flatten().fieldErrors);
     return;
   }
 
-  alert("Account created!");
-  router.push('/login');
-}catch (err) {
+  if (password !== confirmPassword) {
+    setPasswordMatch(false);
+    return;
+  }
+
+  setPasswordMatch(true);
+
+  try {
+    setLoading(true);
+
+    // Create auth account
+    const { data: authData, error: authError } =
+      await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+            role,
+          },
+        },
+      });
+
+    if (authError) {
+      alert(authError.message);
+      return;
+    }
+
+    if (!authData.user) {
+      alert("Failed to create user");
+      return;
+    }
+
+    // Generate unique school code
+    let schoolCode = "";
+    let exists = true;
+
+    while (exists) {
+      schoolCode = generateSchoolCode(name);
+
+      const { data: existingSchool, error } = await supabase
+        .from("schools")
+        .select("school_code")
+        .eq("school_code", schoolCode)
+        .maybeSingle();
+
+      if (error) {
+        console.error(error);
+      }
+
+      exists = !!existingSchool;
+    }
+
+    console.log("Generated school code:", schoolCode);
+
+    // Insert school record
+    const { error: schoolError } = await supabase
+      .from("schools")
+      .insert({
+        id: authData.user.id,
+        school_name: name,
+        school_code: schoolCode,
+      });
+
+    if (schoolError) {
+      console.error(schoolError);
+      alert(schoolError.message);
+      return;
+    }
+
+    alert("Account created successfully!");
+
+    router.push("/login");
+  } catch (err) {
     console.error(err);
+    alert("Something went wrong");
   } finally {
     setLoading(false);
   }
 }
-
 
     return (<>
     
@@ -99,10 +148,8 @@ setPasswordMatch(false);
 
         </div>
 
-        {/* Form */}
         <form className="mt-6 space-y-4">
 
-          {/* Name field changes label */}
           <input
             value={name}
   onChange={(e) => setName(e.target.value)}

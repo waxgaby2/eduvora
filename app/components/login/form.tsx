@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/app/lib/client";
+import Link from "next/link";
 export function LoginForm(){
 
         const [email,setEmail]=useState<string>("");
@@ -82,9 +83,9 @@ export function LoginForm(){
 
         <p className="mt-5 text-center text-xs text-slate-500">
          Are you new?{" "}
-          <span className="text-[#4F46E5] font-medium cursor-pointer">
+          <Link href="/register" className="text-[#4F46E5] font-medium cursor-pointer">
            Register
-          </span>
+          </Link>
         </p>
 
       </div>)

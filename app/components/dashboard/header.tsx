@@ -6,15 +6,20 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Menubar from "./menubar";
-
-export default function Header() {
+type SchoolProps = {
+  schoolName: string;
+  schoolCode: string;
+};
+export default function Header({ schoolName,
+  schoolCode,
+}: SchoolProps) {
   return (
     <header className="sticky top-0 z-30 flex min-h-20 items-center justify-between border-b border-slate-200 bg-white lg:px-8 px-3">
   
       <div className="flex flex-row gap-4 justify-center items-center">
-  <Menubar />
+  <Menubar schoolName={schoolName} schoolCode={schoolCode} />
         <h2 className="mt-1 lg:text-2xl font-bold text-black">
-        Greenfield School 
+       {schoolName}
         </h2>
       </div>
 
@@ -41,27 +46,6 @@ export default function Header() {
           <span className="absolute right-3 top-3 h-2.5 w-2.5 rounded-full bg-red-500" />
         </button>
 
-        {/* Profile */}
-        <button className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 transition hover:bg-slate-50">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 font-semibold text-indigo-600">
-            A
-          </div>
-
-          <div className="hidden text-left lg:block">
-            <p className="text-sm font-semibold text-slate-900">
-              Admin
-            </p>
-
-            <p className="text-xs text-slate-500">
-              School Owner
-            </p>
-          </div>
-
-          <ChevronDown
-            size={18}
-            className="text-slate-400"
-          />
-        </button>
       </div>
     </header>
   );

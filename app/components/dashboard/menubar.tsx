@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 import {
   LayoutDashboard,
   GraduationCap,
@@ -52,12 +54,26 @@ const menuItems = [
     icon: Settings,
   },
 ];
-
-export default function Menubar() {
+type SchoolProps = {
+  schoolName: string;
+  schoolCode: string;
+};
+export default function Menubar({ schoolName,
+  schoolCode,
+}: SchoolProps) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+useEffect(() => {
+  document.body.style.overflow =open
+    ? "hidden"
+    : "";
 
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [open]);
   return (
-    <div className="lg:hidden">
+    <div className="lg:hidden ">
       
       <button type="button" aria-label="open menu"
         onClick={() => setOpen(true)}
@@ -73,9 +89,8 @@ export default function Menubar() {
         />
       )}
 
-      {/* Mobile Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col border-r border-slate-200 bg-white transition-transform duration-300 lg:hidden ${
+        className={`fixed left-0 pb-20 top-0 z-50 flex h-screen w-72 flex-col border-r border-slate-200 bg-white transition-transform duration-300 lg:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -102,94 +117,58 @@ export default function Menubar() {
 
         <nav className="flex-1 px-4">
           <div className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
+           {menuItems.map((item) => {
+  const Icon = item.icon;
 
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100"
-                >
-                  <Icon size={18} />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
+  const isActive = pathname === item.href;
+
+  return (
+    <Link
+      key={item.name}
+      href={item.href}
+      onClick={() => setOpen(false)}
+      className={`flex items-center gap-3 rounded-2xl px-4 py-3
+        ${
+          isActive
+            ? "bg-indigo-50 text-indigo-700"
+            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+        }`}
+    >
+      <Icon size={18} />
+      <span>{item.name}</span>
+    </Link>
+  );
+})}
           </div>
         </nav>
-      </aside>
-
-      {/* Desktop Sidebar */}
-      <aside className="sticky top-0 hidden h-screen w-72 flex-col border-r border-slate-200 bg-white lg:flex">
-        <div className="px-6 pt-8 pb-6">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-lg font-bold text-white">
-              E
+            <div className="border-t border-slate-200 p-4">
+        <div className="rounded-3xl bg-slate-50 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-lg font-bold text-indigo-600">
+              A
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                Eduvora
-              </h1>
+              <h3 className="text-sm font-semibold text-slate-900">
+                {schoolName}
+              </h3>
 
               <p className="text-xs text-slate-500">
-                School Management
+               
+                School Code: {schoolCode}
               </p>
             </div>
           </div>
+
+          <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50">
+            <LogOut size={18} />
+            Logout
+          </button>
         </div>
-
-        <nav className="flex-1 overflow-y-auto px-4">
-          <div className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="group flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 transition hover:bg-slate-100"
-                >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
-                    <Icon size={18} />
-                  </div>
-
-                  <span className="font-medium">
-                    {item.name}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
-
-        <div className="border-t border-slate-200 p-4">
-          <div className="rounded-3xl bg-slate-50 p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-lg font-bold text-indigo-600">
-                A
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Greenfield School
-                </h3>
-
-                <p className="text-xs text-slate-500">
-                  School Administrator
-                </p>
-              </div>
-            </div>
-
-            <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50">
-              <LogOut size={18} />
-              Logout
-            </button>
-          </div>
-        </div>
+      </div>
       </aside>
+
+     
     </div>
   );
 }

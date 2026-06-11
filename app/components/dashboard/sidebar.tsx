@@ -11,6 +11,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const menuItems = [
   {
@@ -50,8 +51,14 @@ const menuItems = [
     icon: Settings,
   },
 ];
-
-export default function Sidebar() {
+type SchoolProps = {
+  schoolName: string;
+  schoolCode: string;
+};
+export default function Sidebar({ schoolName,
+  schoolCode,
+}: SchoolProps) {
+  const pathname=usePathname();
   return (
     <aside className="hidden lg:flex sticky top-0 z-30 h-screen w-72 flex-col border-r border-slate-200 bg-white">
       {/* Logo */}
@@ -77,20 +84,21 @@ export default function Sidebar() {
         <div className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
+const isActive = pathname === item.href;
 
             return (
               <Link
                 key={item.name}
                 href={item.href}
                 className={`group flex items-center gap-3 rounded-2xl px-4 py-3 transition-all duration-200 ${
-                  item.active
+                  isActive
                     ? "bg-indigo-50 text-indigo-700"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
-                    item.active
+                    isActive
                       ? "bg-white shadow-sm"
                       : "bg-slate-100 group-hover:bg-white"
                   }`}
@@ -106,7 +114,6 @@ export default function Sidebar() {
       </nav>
 
     
-      {/* User Section */}
       <div className="border-t border-slate-200 p-4">
         <div className="rounded-3xl bg-slate-50 p-4">
           <div className="flex items-center gap-3">
@@ -116,11 +123,12 @@ export default function Sidebar() {
 
             <div>
               <h3 className="text-sm font-semibold text-slate-900">
-                Greenfield School
+                {schoolName}
               </h3>
 
               <p className="text-xs text-slate-500">
-                School Administrator
+               
+                School Code: {schoolCode}
               </p>
             </div>
           </div>
