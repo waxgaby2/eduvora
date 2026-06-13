@@ -63,7 +63,7 @@ export default function Hero(){
           Get Started
         </Link>
 
-        <button
+       <Link href="/register"
           className={`rounded-2xl border
           border-slate-300 bg-white
           px-7 py-4 text-sm font-semibold
@@ -73,7 +73,7 @@ export default function Hero(){
           active:scale-95`}
         >
           Book Demo
-        </button>
+        </Link>
       </div>
     </div>
 

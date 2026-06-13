@@ -56,6 +56,21 @@ export function Header(){
         Contact
       </a>
     </nav>
+     <div
+        className={`flex flex-col gap-4
+        sm:flex-row`}
+      >
+       <Link href="/login"
+          className={`rounded-2xl border
+          border-slate-300 bg-white
+          px-5 py-3 text-sm font-semibold
+          text-slate-700 transition-all duration-300
+          hover:border-[#4F46E5]
+          hover:text-[#4F46E5]
+          active:scale-95`}
+        >
+          Login
+        </Link>
 <Link href="/register" className={`hidden rounded-xl bg-indigo-700
       px-5 py-3 text-sm font-semibold text-white
       transition-all duration-300
@@ -63,7 +78,7 @@ export function Header(){
       active:scale-95 lg:flex`}
     >
       Get Started
-    </Link>
+    </Link></div>
 
     <div className={`flex items-center gap-3 lg:hidden`}>
       <button className="text-slate-700">
