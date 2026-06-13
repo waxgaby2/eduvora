@@ -8,6 +8,7 @@ import {
 import { QuickAccess } from "../components/dashboard/school/quickaccess";
 import { createClient } from "../lib/supabase/server";
 import { getSchool } from "../lib/db/schooldata";
+import Greeting from "../components/dashboard/greeting";
 const stats = [
   {
     title: "Students",
@@ -42,9 +43,7 @@ const school = await getSchool();
     <div className="space-y-8">
 
       <section>
-        <h2 className="text-3xl font-bold text-slate-900">
-          Welcome Back 👋
-        </h2>
+       <Greeting /> 
 
         <p className="mt-2 text-slate-500">
           Here's what's happening in your school today.
@@ -120,7 +119,7 @@ if(stat.title==="Teachers"){
             ))}
           </div>
         </div>
-<QuickAccess />
+<QuickAccess schoolId={school?.id} />
  
       </section>
 

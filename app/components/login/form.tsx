@@ -70,7 +70,7 @@ export function LoginForm(){
   onClick={handleLogin}
   type="button"
   disabled={loading}
-  className="w-full rounded-xl cursor-pointer bg-[#4F46E5] py-3 font-medium text-white transition disabled:opacity-50 flex items-center justify-center gap-2"
+  className="w-full rounded-xl cursor-pointer bg-indigo-700 py-3 font-medium text-white transition disabled:opacity-50 flex items-center justify-center gap-2"
 >
   {loading && (
     <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />

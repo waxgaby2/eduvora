@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import AddStudents from "../student/addstudent";
 import AddTeachers from "../teacher/addteacher";
-export function QuickAccess(){
+export function QuickAccess({schoolId}:{schoolId:string}){
     return (
         <div className="rounded-3xl border border-slate-200 bg-white p-6">
           <h3 className="text-lg font-semibold text-slate-900">
@@ -28,7 +28,7 @@ export function QuickAccess(){
             <DialogTitle>Add New Student</DialogTitle>
           </DialogHeader>
 
-          <AddStudents />
+          <AddStudents schoolId={schoolId} />
         </DialogContent>
       </Dialog>
 

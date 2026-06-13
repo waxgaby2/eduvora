@@ -14,7 +14,7 @@ export function Header(){
   >
     <h1
       className={`text-2xl font-bold tracking-tight
-      text-[#312E81]`}
+      text-indigo-900`}
     >
       Eduvora
     </h1>
@@ -56,7 +56,7 @@ export function Header(){
         Contact
       </a>
     </nav>
-<Link href="/register" className={`hidden rounded-xl bg-[#4F46E5]
+<Link href="/register" className={`hidden rounded-xl bg-indigo-700
       px-5 py-3 text-sm font-semibold text-white
       transition-all duration-300
       hover:bg-[#4338CA]

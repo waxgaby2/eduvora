@@ -15,7 +15,6 @@ export async function getSchool() {
     .single();
 
   if (error) {
-    console.error(error);
     return null;
   }
 

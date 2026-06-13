@@ -227,7 +227,7 @@ async function handleRegister() {
           Already have an account?{" "}
           <Link
           href="/login"
-          className="text-[#4F46E5] font-medium cursor-pointer">
+          className="text-indigo-700 font-medium cursor-pointer">
             Login
           </Link>
         </p>

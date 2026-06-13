@@ -12,7 +12,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-
+import { createClient } from "@/app/lib/client";
 const menuItems = [
   {
     name: "Dashboard",
@@ -51,6 +51,8 @@ const menuItems = [
     icon: Settings,
   },
 ];
+
+
 type SchoolProps = {
   schoolName: string;
   schoolCode: string;
@@ -58,13 +60,28 @@ type SchoolProps = {
 export default function Sidebar({ schoolName,
   schoolCode,
 }: SchoolProps) {
+
   const pathname=usePathname();
+
+const supabase = createClient();
+
+async function handleLogout() {
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  window.location.href = "/login";
+}
+
   return (
     <aside className="hidden lg:flex sticky top-0 z-30 h-screen w-72 flex-col border-r border-slate-200 bg-white">
       {/* Logo */}
       <div className="px-6 pt-8 pb-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-lg font-bold text-white shadow-sm">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-900 text-lg font-bold text-white shadow-sm">
             E
           </div>
 
@@ -133,7 +150,9 @@ const isActive = pathname === item.href;
             </div>
           </div>
 
-          <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50">
+          <button
+          onClick={handleLogout}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50">
             <LogOut size={18} />
             Logout
           </button>

@@ -3,7 +3,7 @@
 import { useState,useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
+import { createClient } from "@/app/lib/client";
 import {
   LayoutDashboard,
   GraduationCap,
@@ -63,6 +63,22 @@ export default function Menubar({ schoolName,
 }: SchoolProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  const supabase = createClient();
+
+ async function handleLogout() {
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  window.location.href = "/login";
+}
+
+
+
 useEffect(() => {
   document.body.style.overflow =open
     ? "hidden"
@@ -72,6 +88,8 @@ useEffect(() => {
     document.body.style.overflow = "";
   };
 }, [open]);
+
+
   return (
     <div className="lg:hidden ">
       
@@ -160,7 +178,9 @@ useEffect(() => {
             </div>
           </div>
 
-          <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50">
+          <button
+          onClick={handleLogout}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50">
             <LogOut size={18} />
             Logout
           </button>

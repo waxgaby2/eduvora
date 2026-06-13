@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Hero(){
     return(
         <section
@@ -19,7 +21,7 @@ export default function Hero(){
         className={`mb-6 rounded-full
         border border-indigo-100
         bg-indigo-50 px-4 py-2
-        text-sm font-medium text-[#4338CA]`}
+        text-sm font-medium text-indigo-700`}
       >
         Modern Academic Management Platform
       </div>
@@ -50,8 +52,8 @@ export default function Hero(){
         className={`mt-10 flex flex-col gap-4
         sm:flex-row`}
       >
-        <button
-          className={`rounded-2xl bg-[#4F46E5]
+        <Link href="/register"
+          className={`rounded-2xl bg-indigo-700
           px-7 py-4 text-sm font-semibold
           text-white shadow-lg shadow-indigo-200
           transition-all duration-300
@@ -59,7 +61,7 @@ export default function Hero(){
           active:scale-95`}
         >
           Get Started
-        </button>
+        </Link>
 
         <button
           className={`rounded-2xl border
