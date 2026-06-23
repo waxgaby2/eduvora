@@ -17,6 +17,7 @@ type CreateStudentParams = {
 export async function createStudent(
   params: CreateStudentParams
 ) {
+    try {
   const {
     schoolId,
     fullName,
@@ -104,4 +105,15 @@ export async function createStudent(
     success: true,
     studentCode,
   };
-}
+} catch (error) {
+
+    console.log("GENERAL ERROR", error);
+
+    return {
+      success:false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unknown error",
+    };
+  }}

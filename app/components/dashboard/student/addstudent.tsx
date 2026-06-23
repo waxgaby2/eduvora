@@ -43,6 +43,11 @@ export default function AddStudents({
         parent_number,
       });
 
+
+if (!result.success) {
+ toast.error(result.error);
+ return;
+}
       toast.success(
         `Student created successfully (${result.studentCode})`
       );
