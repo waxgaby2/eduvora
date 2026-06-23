@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/app/lib/client";
+import { toast } from "sonner";
 const menuItems = [
   {
     name: "Dashboard",
@@ -69,10 +70,10 @@ async function handleLogout() {
   const { error } = await supabase.auth.signOut();
 
   if (error) {
-    console.error(error);
+    toast.error("Something went wrong, try again");
     return;
   }
-
+toast.success("Logout Successful")
   window.location.href = "/login";
 }
 
@@ -152,7 +153,7 @@ const isActive = pathname === item.href;
 
           <button
           onClick={handleLogout}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50">
+          className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-red-100 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50">
             <LogOut size={18} />
             Logout
           </button>

@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/app/lib/client";
+import { toast } from "sonner";
 import Link from "next/link";
 export function LoginForm(){
 
@@ -21,18 +22,19 @@ export function LoginForm(){
           });
     
         if (error) {
-          alert(error.message);
+          toast.error(error.message);
           return;
         }
     const {
   data: { session },
 } = await supabase.auth.getSession();
 
-       alert("Logged In")
+       toast.success("Login Successful")
        router.push("/dashboard");
 
       } catch (err) {
-        console.error(err);
+        
+    toast.error("Something went wrong, try again")
       } finally {
         setLoading(false);
         

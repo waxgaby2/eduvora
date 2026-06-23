@@ -57,8 +57,7 @@ export function Header(){
       </a>
     </nav>
      <div
-        className={`flex flex-col gap-4
-        sm:flex-row`}
+        className={`flex gap-4`}
       >
        <Link href="/login"
           className={`rounded-2xl border
@@ -71,11 +70,11 @@ export function Header(){
         >
           Login
         </Link>
-<Link href="/register" className={`hidden rounded-xl bg-indigo-700
+<Link href="/register" className={`rounded-xl bg-indigo-700
       px-5 py-3 text-sm font-semibold text-white
       transition-all duration-300
       hover:bg-[#4338CA]
-      active:scale-95 lg:flex`}
+      active:scale-95`}
     >
       Get Started
     </Link></div>

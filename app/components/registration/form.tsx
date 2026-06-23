@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { use, useState } from "react";
 import { createClient } from "@/app/lib/client";
 import { RegisterSchema } from "@/app/lib/validations/register";
@@ -44,7 +45,6 @@ async function handleRegister() {
   try {
     setLoading(true);
 
-    // Create auth account
     const { data: authData, error: authError } =
       await supabase.auth.signUp({
         email,
@@ -58,16 +58,15 @@ async function handleRegister() {
       });
 
     if (authError) {
-      alert(authError.message);
+      toast.error(authError.message);
       return;
     }
 
     if (!authData.user) {
-      alert("Failed to create user");
+      toast.error("Failed to create user");
       return;
     }
 
-    // Generate unique school code
     let schoolCode = "";
     let exists = true;
 
@@ -81,15 +80,13 @@ async function handleRegister() {
         .maybeSingle();
 
       if (error) {
-        console.error(error);
+        
       }
 
       exists = !!existingSchool;
     }
 
-    console.log("Generated school code:", schoolCode);
 
-    // Insert school record
     const { error: schoolError } = await supabase
       .from("schools")
       .insert({
@@ -99,17 +96,17 @@ async function handleRegister() {
       });
 
     if (schoolError) {
-      console.error(schoolError);
-      alert(schoolError.message);
+      toast.error(schoolError.message);
       return;
     }
 
-    alert("Account created successfully!");
+
+       toast.success("Account created Successfully")
 
     router.push("/login");
   } catch (err) {
-    console.error(err);
-    alert("Something went wrong");
+   
+    toast.error("Something went wrong, try again")
   } finally {
     setLoading(false);
   }
