@@ -2,6 +2,7 @@ import Sidebar from "../components/dashboard/sidebar";
 import { redirect } from "next/navigation";
 import { createClient } from "../lib/supabase/server";
 import Header from "../components/dashboard/header";
+import { getSchool } from "../lib/db/schooldata";
 export default async function DashboardLayout({
   children,
 }: {
@@ -25,6 +26,10 @@ export default async function DashboardLayout({
   .select("*")
   .eq("id", user?.id)
   .single();
+
+if (!school.setup_completed){
+  redirect("setup-account");
+}
 
   return (
     <div className="flex min-h-screen text-black bg-slate-50">

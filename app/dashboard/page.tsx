@@ -9,6 +9,7 @@ import { QuickAccess } from "../components/dashboard/school/quickaccess";
 import { createClient } from "../lib/supabase/server";
 import { getSchool } from "../lib/db/schooldata";
 import Greeting from "../components/dashboard/greeting";
+import { redirect } from "next/navigation";
 const stats = [
   {
     title: "Students",
@@ -39,6 +40,7 @@ const stats = [
 export default async function DashboardPage() {
 
 const school = await getSchool();
+
   return (
     <div className="space-y-8">
 

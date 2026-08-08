@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-
+import { getSchool } from "../lib/db/schooldata";
+import { redirect } from "next/navigation";
+import { createClient } from "../lib/client";
 const SCHOOL_CLASSES = {
   Nursery: ["Nursery 1", "Nursery 2"],
   Primary: [
@@ -95,6 +97,25 @@ export default function SetupAcc() {
     });
   }
 
+async function getSchoolData(){
+  const supabase = await createClient();
+  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return null;
+  const { data: school } = await supabase
+  .from("schools")
+  .select("*")
+  .eq("id", user?.id)
+  .single();
+
+if (school.setup_completed){
+  redirect("dashboard");
+}
+}
+getSchoolData();
   return (
     <div className="min-h-screen bg-indigo-50 flex justify-center px-4 py-12">
       <div className="w-full max-w-3xl space-y-10">
@@ -230,7 +251,6 @@ export default function SetupAcc() {
           )}
         </section>
 
-        {/* SUBMIT */}
         <button
           onClick={handleCompleteSetup}
           className="w-full bg-indigo-700 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
