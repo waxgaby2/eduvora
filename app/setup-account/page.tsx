@@ -5,6 +5,7 @@ import { getSchool } from "../lib/db/schooldata";
 import { redirect } from "next/navigation";
 import { createClient } from "../lib/client";
 import { createClasses } from "../actions/schoolSetup/addClasses";
+import { useRouter } from "next/navigation";
 const SCHOOL_CLASSES = {
   Nursery: ["Nursery 1", "Nursery 2"],
   Primary: [
@@ -33,6 +34,7 @@ export default function SetupAcc() {
   const [customClass, setCustomClass] = useState("");
   const [subjectInput, setSubjectInput] = useState("");
 const[loading,setLoading]= useState<boolean|undefined>();
+const router=useRouter();
   const availableClasses = useMemo(() => {
     return schoolTypes.flatMap(
       (type) =>
@@ -117,13 +119,18 @@ if (school.setup_completed){
 }
 }
 
-async function handleSubjectComplete(){
+async function handleSubjectComplete() {
   setLoading(true);
-   const result = await createClasses({
+
+  const result = await createClasses({
     className: selectedClasses,
-   })
-   
-   setLoading(result?.success);
+  });
+
+  if (result?.success) {
+    router.push("/setup-account/subjects");
+  } else {
+    setLoading(false);
+  }
 }
 getSchoolData();
   return (

@@ -2,70 +2,66 @@
 
 import { getSchool } from "@/app/lib/db/schooldata";
 import { supabaseAdmin } from "@/app/lib/supabase/admin";
-import { createClient } from "@/app/lib/supabase/server";
-import { string } from "zod";
+
 type CreateClassParams = {
- 
   className: string[];
-  
 };
 
 export async function createClasses(
   params: CreateClassParams
 ) {
-    try {
-  const {
-   
-    className,
-  } = params;
+  try {
+    const { className } = params;
 
-  
+    const school = await getSchool();
 
-const school = await getSchool();
-for (const classItem of className){
+    if (!school) {
+      throw new Error("School not found");
+    }
 
-const { data: classExist, error: classError } =
-    await supabaseAdmin
-      .from("classes")
-      .select("class_name")
-      .eq("school_id", school?.id)
-      .ilike("class_name", classItem)
-      .maybeSingle();
+    for (const classItem of className) {
+      const { data: classExist, error: classError } =
+        await supabaseAdmin
+          .from("classes")
+          .select("class_name")
+          .eq("school_id", school.id)
+          .ilike("class_name", classItem)
+          .maybeSingle();
 
-if(classError){
-    console.error(classError);
-   continue;
-}
-    if(classExist)
-    {
-    continue;
-}else{
-      const { error: studentError } =
-    await supabaseAdmin
-      .from("classes")
-      .insert({
-      
-        school_id: school?.id,
-       
-        class_name: classItem,
-       
-      });
-}
- return {
-      success:true,
-     
+      if (classError) {
+        throw new Error(classError.message);
+      }
+
+      // Skip this class if it already exists
+      if (classExist) {
+        continue;
+      }
+
+      const { error: insertError } = await supabaseAdmin
+        .from("classes")
+        .insert({
+          school_id: school.id,
+          class_name: classItem,
+        });
+
+      if (insertError) {
+        throw new Error(insertError.message);
+      }
+    }
+
+    // This runs only after ALL classes have been processed
+    return {
+      success: true,
     };
-}
-  
-} catch (error) {
-
+  } catch (error) {
     console.log("GENERAL ERROR", error);
 
     return {
-      success:false,
+      success: false,
       error:
         error instanceof Error
           ? error.message
           : "Unknown error",
     };
-  }}
+  }
+}

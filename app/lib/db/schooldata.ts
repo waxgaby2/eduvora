@@ -1,4 +1,5 @@
 import { createClient } from "../supabase/server";
+
 export async function getSchool() {
   const supabase = await createClient();
 
@@ -19,4 +20,26 @@ export async function getSchool() {
   }
 
   return data;
+}
+
+export async function getClasses() {
+  const school = await getSchool();
+
+  if (!school) {
+    return [];
+  }
+
+  const supabase = await createClient();
+
+  const { data: classes, error } = await supabase
+    .from("classes")
+    .select("*")
+    .eq("school_id", school.id);
+
+  if (error) {
+    console.error(error);
+    return [];
+  }
+
+  return classes;
 }
