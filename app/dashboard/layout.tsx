@@ -27,8 +27,8 @@ export default async function DashboardLayout({
   .eq("id", user?.id)
   .single();
 
-if (!school.setup_completed){
-  redirect("setup-account");
+if (!school?.setup_completed) {
+  redirect("/setup-account");
 }
 
   return (

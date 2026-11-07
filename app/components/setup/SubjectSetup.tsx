@@ -2,8 +2,10 @@
 "use client";
 
 import { useState } from "react";
+import { completeSubjectSetup } from "@/app/actions/schoolSetup/completeSetup";
 import { saveClassSubjects } from "@/app/actions/schoolSetup/saveClassSubjects";
 import { toast } from "sonner";
+import {useRouter} from "next/navigation";
 type SchoolClass = {
   id: string;
   class_name: string;
@@ -21,10 +23,12 @@ export default function SubjectSetup({
     Record<string, string[]>
   >({});
 const [loading, setLoading] = useState(false);
+const router=useRouter();
   // Each class also has its own input value
   const [subjectInputs, setSubjectInputs] = useState<
     Record<string, string>
   >({});
+
 
   function addSubject(classId: string) {
     const value = (subjectInputs[classId] || "").trim();
@@ -61,18 +65,29 @@ const [loading, setLoading] = useState(false);
 
    
   }
-  async function handleSubjectComplete() {
+async function handleSubjectComplete() {
   setLoading(true);
 
   try {
-    const assignments = Object.entries(classSubjects).map(
-      ([classId, subjects]) => ({
+    const assignments = Object.entries(classSubjects)
+      .filter(([, subjects]) => subjects.length > 0)
+      .map(([classId, subjects]) => ({
         classId,
         subjects,
-      })
-    );
+      }));
 
-    const result = await saveClassSubjects(assignments);
+    // Save newly added subjects, if any
+    if (assignments.length > 0) {
+      const saveResult = await saveClassSubjects(assignments);
+
+      if (!saveResult.success) {
+        toast.error(saveResult.message);
+        return;
+      }
+    }
+
+    // Check the database and mark setup as complete
+    const result = await completeSubjectSetup();
 
     if (!result.success) {
       toast.error(result.message);
@@ -80,13 +95,15 @@ const [loading, setLoading] = useState(false);
     }
 
     toast.success(result.message);
+    router.replace("/dashboard");
   } catch (error) {
-    console.error(error);
+    console.error("Subject setup error:", error);
     toast.error("Something went wrong.");
   } finally {
     setLoading(false);
   }
 }
+
   return (
     <div className="min-h-screen bg-indigo-50 flex justify-center px-4 py-12">
       <div className="w-full max-w-3xl space-y-8">
@@ -221,18 +238,13 @@ const [loading, setLoading] = useState(false);
         </section>
 
         {/* Continue */}
-       <button
+      <button
   type="button"
   onClick={handleSubjectComplete}
-  disabled={
-    loading ||
-    Object.values(classSubjects).every(
-      (subjects) => subjects.length === 0
-    )
-  }
+  disabled={loading}
   className="w-full bg-indigo-700 text-white py-3 rounded-xl font-semibold disabled:bg-slate-300"
 >
-  {loading ? "Saving..." : "Save and Continue"}
+  {loading ? "Completing..." : "Done"}
 </button>
       </div>
     </div>
