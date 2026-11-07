@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { getSchool } from "../lib/db/schooldata";
 import { redirect } from "next/navigation";
 import { createClient } from "../lib/client";
+import { createClasses } from "../actions/schoolSetup/addClasses";
 const SCHOOL_CLASSES = {
   Nursery: ["Nursery 1", "Nursery 2"],
   Primary: [
@@ -31,7 +32,7 @@ export default function SetupAcc() {
 
   const [customClass, setCustomClass] = useState("");
   const [subjectInput, setSubjectInput] = useState("");
-
+const[loading,setLoading]= useState<boolean|undefined>();
   const availableClasses = useMemo(() => {
     return schoolTypes.flatMap(
       (type) =>
@@ -115,12 +116,20 @@ if (school.setup_completed){
   redirect("dashboard");
 }
 }
+
+async function handleSubjectComplete(){
+  setLoading(true);
+   const result = await createClasses({
+    className: selectedClasses,
+   })
+   
+   setLoading(result?.success);
+}
 getSchoolData();
   return (
     <div className="min-h-screen bg-indigo-50 flex justify-center px-4 py-12">
       <div className="w-full max-w-3xl space-y-10">
 
-        {/* HEADER */}
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-slate-900">
             Set Up Your School Account
@@ -130,7 +139,6 @@ getSchoolData();
           </p>
         </div>
 
-        {/* SCHOOL TYPE */}
         <section className="bg-white rounded-xl shadow p-6 space-y-4">
           <h2 className="text-lg font-semibold text-slate-800">
             School Type
@@ -153,7 +161,6 @@ getSchoolData();
           </div>
         </section>
 
-        {/* CLASSES */}
         <section className="bg-white rounded-xl shadow p-6 space-y-5">
           <h2 className="text-lg font-semibold text-slate-800">
             Classes
@@ -179,7 +186,6 @@ getSchoolData();
             </div>
           )}
 
-          {/* CUSTOM CLASS */}
           <div className="flex gap-2">
             <input
               value={customClass}
@@ -197,7 +203,6 @@ getSchoolData();
             </button>
           </div>
 
-          {/* SELECTED CLASSES */}
           {selectedClasses.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-2">
               {selectedClasses.map((item) => (
@@ -211,52 +216,20 @@ getSchoolData();
               ))}
             </div>
           )}
-        </section>
-
-        {/* SUBJECTS */}
-        <section className="bg-white rounded-xl shadow p-6 space-y-5">
-          <h2 className="text-lg font-semibold text-slate-800">
-            Subjects
-          </h2>
-
-          <div className="flex gap-2">
-            <input
-              value={subjectInput}
-              onChange={(e) => setSubjectInput(e.target.value)}
-              placeholder="Enter subject"
-              className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-
-            <button
-              type="button"
-              onClick={addSubject}
-              className="bg-indigo-700 text-white px-4 rounded-lg hover:bg-indigo-700"
-            >
-              Add
-            </button>
-          </div>
-
-          {subjects.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {subjects.map((subject) => (
-                <button
-                  key={subject}
-                  onClick={() => removeSubject(subject)}
-                  className="px-3 py-1 text-sm cursor-pointer bg-indigo-100 text-indigo-700 rounded-full hover:bg-indigo-200"
-                >
-                  {subject} ×
-                </button>
-              ))}
-            </div>
-          )}
-        </section>
-
+          
         <button
-          onClick={handleCompleteSetup}
-          className="w-full bg-indigo-700 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
+          onClick={handleSubjectComplete}
+          disabled={loading || selectedClasses.length<1}
+          className={`w-full ${loading ? 'bg-indigo-500 text-white' : 'bg-indigo-700 text-white'}  py-3 
+          rounded-xl font-semibold  transition-all duration-1000
+          `}
         >
-          Complete Setup
+          {!loading? "Submit":"Submitting..."}
         </button>
+        </section>
+
+   
+
       </div>
     </div>
   );
